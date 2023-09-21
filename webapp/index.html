@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="app/main.css">
+   <script src="../sani.js/dist/sani.js"></script>
+   <!-- <script src="app/sani.js"></script> -->
+   <script src="app/main.js"></script>
+</head>
+
+
+<body>
+
+   <section id="overlay" class="loading">
+      <div id="loader"><span></span><span></span><span></span><span></span></div>
+   </section>
+
+
+   <script>
+
+   "use strict"
+
+   // Feature detection.
+   if( typeof Symbol !== "function" ){
+      die()
+   }
+
+   // https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onerror#window.onerror
+   // For some reason, error is undefined in IE, but message is "Syntax error".
+   window.onerror = function( message ){
+      if( message === "Syntax error" )
+         die()
+   }
+
+   function die(){
+      var overlay = document.getElementById("overlay")
+      overlay.className = "unsupported"
+      overlay.innerHTML = "<p>Sorry,<br>browser not supported.</p>"
+      if( window.stop )
+         window.stop()
+      else
+         document.execCommand("Stop")    // IE.
+   }
+
+   </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
