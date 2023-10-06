@@ -3,7 +3,7 @@ import { Ball }   from "./Ball"
 import { Spline } from "./Spline"
 import { lcm }    from "./lcm"
 import { motion } from "./motion"
-import { WebMidi } from 'webmidi'
+import { midiInit } from './midi.js'
 
 
 const gravity = { x: 0, y: -9.81 / 1000 }
@@ -90,15 +90,7 @@ const getPosition = {
 
 function prepare(settings, siteswap) {
 
-   //init Webmidi
-   WebMidi.enable(function (err) {
-      if (err) {
-        console.log("WebMidi could not be enabled.", err);
-      } else {
-        console.log("WebMidi enabled!");
-        WebMidi.outputs.forEach(output => console.log(output.manufacturer, output.name));
-      }
-    });
+   midiInit();
 
    const balls = Array(siteswap.props).fill().map((val, id) => {
       const randomColor = '#'+Math.floor(Math.random()*16777215).toString(16);

@@ -1,4 +1,4 @@
-import { WebMidi } from 'webmidi'
+import { ballEvent } from './midi'
 class Ball {
 
    constructor(color, id = 0) {
@@ -11,8 +11,8 @@ class Ball {
       this.animationAt = -1
       this.elapsed = 0
       this.midi = {
-         note: 0,
-         channel: id+1,
+         note: 40 + id,
+         channel: id + 1,
          velocity: 0,
          noteOn: false,
       }
@@ -30,38 +30,14 @@ class Ball {
       this.elapsed += delta
 
       let animation = animations[this.animationAt]
-      // send midiOn on animation.type throw
-      
-      // console.log(WebMidi.getOutputByName("IAC Driver Bus 1"));
+
       if (animation.type === "throw" && !this.midi.noteOn) {
          this.midi.noteOn = true;
-         this.midi.velocity = 127;
-         this.midi.note = this.id + 40;
-         if (WebMidi.enabled) {
-            const output = WebMidi.getOutputByName("IAC Driver Bus 1").channels[this.midi.channel];
-            if (output) {
-               output.playNote(this.midi.note);
-            }
-         }
-         console.log('%c Ball! 🎱 %s', 'color: '+this.color+'; background: #222; font-size: 12px;', this.midi.noteOn ? 'noteON' : 'noteOFF');
-         document.getElementById('midi-output').innerHTML += `<span style="color: ${this.color};">Ball! 🎱 noteON ${this.midi.note}</span> `;
-         document.getElementById('midi-output').innerHTML += `<br>`;
+         ballEvent(this);
       }
-      // send midiOff on animation.type catch
       if (animation.type === "catch" && this.midi.noteOn) {
          this.midi.noteOn = false;
-         this.midi.velocity = 0;
-         this.midi.note = this.id + 40;
-         if (WebMidi.enabled) {
-            const output = WebMidi.getOutputByName("IAC Driver Bus 1").channels[this.midi.channel];
-            if (output) {
-               output.stopNote(this.midi.note);
-            }
-         }
-         console.log('%c Ball! 🎱 %s', 'color: '+this.color+'; background: #222; font-size: 12px;', this.midi.noteOn ? 'noteON' : 'noteOFF');
-         document.getElementById('midi-output').innerHTML += `<span style="color: ${this.color};">Ball! 🎱 noteOFF ${this.midi.note}</span> `;
-         //to previous add a break
-         document.getElementById('midi-output').innerHTML += `<br>`;
+         ballEvent(this);
       }
 
       while (this.elapsed >= animation.duration) {
